@@ -131,9 +131,9 @@ with st.container():
         location=[50, 35],
         tiles="cartodbpositron",
         zoom_start=6,
-        dragging=False,
-        zoom_control=False,
-        scrollWheelZoom=False,
+        # dragging=False,
+        # zoom_control=False,
+        # scrollWheelZoom=False,
     )
     folium.Choropleth(
         geo_data=df_sum_geo.__geo_interface__,
