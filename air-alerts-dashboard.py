@@ -12,7 +12,10 @@ def create_barplot(x, y, title_text):
         y=y,
         orientation='h',
         text=x,
-        textfont=dict(color="white"),
+        textfont=dict(
+            family='Aerial Black',
+            # color="white"
+            ),
         marker_color=clrs.qualitative.Antique[9],
         hovertemplate='%{y}: %{x} <extra></extra>',
     ))
@@ -20,7 +23,8 @@ def create_barplot(x, y, title_text):
         title=dict(
             text=f'{title_text} <br>(from {min_date} to {max_date})',
             font=dict(
-                color='white'
+                family='Aerial Black'
+                # color='white'
                 )
             ),
         showlegend=False,
@@ -36,8 +40,27 @@ def create_barplot(x, y, title_text):
             tickvals=y,
             ticktext=y,
             ticklabelposition="inside",
-            tickfont=dict(color="white"),
+            tickfont=dict(
+                family='Aerial Black',
+                # color="white"
+                ),
+            # visible=False
         ),
+        # annotations=[
+        #     dict(
+        #         # align='left',
+        #         xanchor='left',
+        #         showarrow=False,
+        #         x=10,
+        #         y=yy,
+        #         # xref='x',
+        #         yref='y',
+        #         text=yy,
+        #         font=dict(
+        #             # color='white'
+        #         )
+        #     ) for yy in y
+        # ],
         height=850
     )
     return fig
