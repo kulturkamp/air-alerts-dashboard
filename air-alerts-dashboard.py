@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.express as px
 import plotly.colors as clrs
 import geopandas as gpd
 import streamlit as st
@@ -65,6 +66,86 @@ def create_barplot(x, y, title_text):
     )
     return fig
 
+def create_barplot2(x, y, title_text):
+    fig = go.Figure(go.Bar(
+        x=x,
+        y=y,
+        text=y,
+        marker_color=clrs.qualitative.Antique[9],
+        hovertemplate='%{x}: %{y} <extra></extra>',
+        textfont=dict(
+            family='Aerial Black',
+        )
+    ))
+    fig.update_layout(
+        title=dict(
+            text=title_text,
+            font=dict(
+                family='Aerial Black',
+            )
+        ),
+        showlegend=False,
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis=dict(
+                tickfont=dict(
+                    family='Aerial Black',
+                )
+        ),
+        yaxis=dict(
+            visible=False
+        )
+    )
+    return fig
+
+def create_barplot3(data, x, y, color, title_text):
+    fig = px.bar(
+        data, 
+        x=x, 
+        y=y, 
+        color=color, 
+        orientation='h',
+        text=x,
+        hover_name=y,
+        hover_data=[x, color],
+        color_discrete_sequence=px.colors.qualitative.Antique,
+    )
+    fig.update_layout(
+        title=dict(
+            text=title_text,
+            font=dict(
+                family='Aerial Black'
+                )
+        ),
+        legend=dict(
+            title_text='',
+            orientation='h',
+            x=0.3, 
+            y=1.1,
+            # xanchor='right',
+            yanchor='top'
+        ),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis=dict(
+            visible=False,
+            
+        ),
+        yaxis=dict(
+            title_text='',
+            categoryorder="total ascending",
+            ticklabelposition="inside",
+            tickfont=dict(
+                family='Aerial Black',
+                ),
+        ),
+        height=850
+    )
+    fig.update_traces(
+        
+        hovertemplate='%{y}<br>Count: %{x}'
+    )
+    return fig
 
 
 oblast_data_url = 'https://raw.githubusercontent.com/Vadimkin/ukrainian-air-raid-sirens-dataset/main/datasets/volunteer_data_uk.csv'
@@ -126,7 +207,7 @@ grouped = oblast_alerts_df.groupby(['region', 'started_at_day']).agg({'duration'
 max_alerts = grouped.iloc[grouped.duration['count'].argmax()]
 
 max_alerts_string = f"On {max_alerts.name[1].strftime('%Y-%m-%d')}, \
-there were {max_alerts.duration['count']} Air Alers in {max_alerts.name[0]}, \
+there were {max_alerts.duration['count']} Air Alerts in {max_alerts.name[0]}, \
 for a total duration of {max_alerts.duration['sum'].seconds//3600} hours and {(max_alerts.duration['sum'].seconds//60)%60} minutes"
 
 
@@ -145,6 +226,27 @@ total_duration_by_region = pd.DataFrame(total_duration_by_region.reset_index())
 df_sum_geo = pd.concat([geo_regions.set_index('region'), total_alerts_by_region.set_index('region'), total_duration_by_region.set_index('region')], axis=1)
 df_sum_geo = df_sum_geo.astype({"duration": "str"})
 df_sum_geo["duration"] = df_sum_geo["duration"].replace({"NaT": "N/A"})
+
+df_alerts = pd.read_csv(oblast_data_url, index_col=0)
+df_alerts.reset_index(inplace=True)
+df_alerts.region = df_alerts.region.apply(lambda x: name_map[x])
+del df_alerts['naive']
+df_alerts['started_at'] = pd.to_datetime(df_alerts['finished_at'])
+df_alerts['finished_at'] = pd.to_datetime(df_alerts['finished_at'])
+df_alerts['started_hour'] = df_alerts.started_at.dt.hour
+df_alerts['start_period'] = (df_alerts['started_hour']%24 + 4)//4
+df_alerts['start_period'].replace(
+    {
+        1:'Late Night<br>(00:00-03:00)',
+        2: 'Early Morning<br>(04:00-07:00)',
+        3: 'Morning<br>(08:00-11:00)',
+        4: 'Noon<br>(12:00-15:00)',
+        5: 'Evening<br>(16:00-19:00)',
+        6: 'Night<br>(20:00-23:00)'
+    }, inplace=True
+)
+periods_total = df_alerts.start_period.value_counts().reset_index()
+
 
 st.markdown("<h1 style='text-align: center; color: #8c785d;'>rUSSIAN INVASION OF UKRAINE</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #8c785d;'>Air Alerts</h2>", unsafe_allow_html=True)
@@ -210,3 +312,23 @@ with st.container():
     st.plotly_chart(create_barplot((total_duration_by_region['duration_seconds']/3600).round(2), 
                                     total_duration_by_region['region'],
                                     'Total duration of Alerts, hours'), use_container_width=True)
+
+
+with st.container():
+    max_period_percentage = round(max(periods_total.start_period)/sum(periods_total.start_period)*100)
+    max_period_percantage_label = periods_total.iloc[periods_total.start_period.argmax()]['index']
+    max_period_percentage_string = f'Almost {max_period_percentage}% of Alerts issued was in {max_period_percantage_label}'
+    st.markdown(f"<h3 style='text-align: center; color: #8c785d;'>{max_period_percentage_string}</h1>", unsafe_allow_html=True)
+    st.plotly_chart(create_barplot2(periods_total['index'], 
+                                    periods_total['start_period'], 
+                                    'Alerts issued by part of the day'), use_container_width=True)
+
+
+with st.container():
+    periods_grouped = df_alerts.groupby(['region','start_period']).size().reset_index()
+    periods_grouped.rename(columns = {
+        0: 'count'
+    }, inplace=True)
+
+    st.plotly_chart(create_barplot3(periods_grouped, 'count', 'region', 'start_period', 
+                                    'Alerts issued by part of the day<br>(grouped by region)'), use_container_width=True)
