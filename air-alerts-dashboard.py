@@ -123,7 +123,10 @@ def create_barplot3(data, x, y, color, title_text):
             x=0.3, 
             y=1.1,
             # xanchor='right',
-            yanchor='top'
+            yanchor='top',
+            font=dict(
+                family='Aerial Black',
+            )
         ),
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
@@ -249,7 +252,7 @@ periods_total = df_alerts.start_period.value_counts().reset_index()
 
 
 st.markdown("<h1 style='text-align: center; color: #8c785d;'>rUSSIAN INVASION OF UKRAINE</h1>", unsafe_allow_html=True)
-st.markdown("<h2 style='text-align: center; color: #8c785d;'>Air Alerts</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center; color: #8c785d;'>Air Alerts<sup>1</sup></h2>", unsafe_allow_html=True)
 st.markdown(f"<h3 style='text-align: center; color: #8c785d;'>from {min_date} to {max_date}</h3>", unsafe_allow_html=True)
 
 with st.container():
@@ -332,3 +335,25 @@ with st.container():
 
     st.plotly_chart(create_barplot3(periods_grouped, 'count', 'region', 'start_period', 
                                     'Alerts issued by part of the day<br>(grouped by region)'), use_container_width=True)
+                                    
+
+
+with st.container():
+    col511, _ = st.columns([1, 3])
+    with col511:
+        with st.expander('Data sources'):
+            st.markdown(
+                '''
+                - [Ukrainian air raid sirens dataset](https://github.com/Vadimkin/ukrainian-air-raid-sirens-dataset/tree/main/datasets) (csv, updated daily)
+                - [First-level Administrative Divisions, Ukraine(geoJSON)](https://geodata.lib.utexas.edu/catalog/stanford-gg870xt4706) 
+                '''
+            )
+
+    col521, _ = st.columns([1, 3])
+    with col521:
+        with st.expander('Annotations'):
+            st.markdown(
+                '''
+                1: Air Alert in the Luhansk Oblast was issued on 2022-04-04 the last time, and it is ongoing since then.
+                '''
+            )                                   
