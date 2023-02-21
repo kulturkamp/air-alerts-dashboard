@@ -125,6 +125,7 @@ df_sum_geo["duration"] = df_sum_geo["duration"].replace({"NaT": "N/A"})
 
 st.markdown("<h1 style='text-align: center; color: #8c785d;'>rUSSIAN INVASION OF UKRAINE</h1>", unsafe_allow_html=True)
 st.markdown("<h2 style='text-align: center; color: #8c785d;'>Air Alerts</h2>", unsafe_allow_html=True)
+st.markdown(f"<h3 style='text-align: center; color: #8c785d;'>from {min_date} to {max_date}</h3>", unsafe_allow_html=True)
 
 with st.container():
     map = folium.Map(
