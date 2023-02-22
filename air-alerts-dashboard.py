@@ -119,11 +119,11 @@ def create_barplot3(data, x, y, color, title_text):
         ),
         legend=dict(
             title_text='',
-            orientation='h',
-            x=0.3, 
-            y=1.1,
+            # orientation='h',
+            # x=0.3, 
+            y=0.3,
             # xanchor='right',
-            yanchor='top',
+            yanchor='bottom',
             font=dict(
                 family='Aerial Black',
             )
@@ -257,31 +257,33 @@ st.markdown(f"<h3 style='text-align: center; color: #8c785d;'>from {min_date} to
 
 with st.container():
     map = folium.Map(
-        location=[50, 35],
-        tiles="cartodbpositron",
+        location=[48.37, 31.16],
+        tiles='cartodbpositron',
         zoom_start=6,
+        max_bounds=True,
         # dragging=False,
         # zoom_control=False,
-        # scrollWheelZoom=False,
+        scrollWheelZoom=False,
     )
+    # map.fit_bounds([(44,22), (52,39.5)])
     folium.Choropleth(
         geo_data=df_sum_geo.__geo_interface__,
         data=total_alerts,
-        key_on="feature.id",
-        fill_color="RdYlGn_r",
+        key_on='feature.id',
+        fill_color='RdYlGn_r',
         bins=12,
-        legend_name=f"Total number of air alerts (from {min_date} to {max_date})"
+        legend_name='Total Alerts number'
     ).add_to(map)
     style_function = lambda x: {
-        "fillOpacity": 0,
-        "color": "#000000",
-        "weight": 1.8,
+        'fillOpacity': 0,
+        'color': '#000000',
+        'weight': 1.5,
     }
     highlight_function = lambda x: {
-        "fillColor": 'white',
-        "fillOpacity": 0.5,
-        "color": "#000000",
-        "weight": 1.8,
+        'fillColor': 'white',
+        'fillOpacity': 0.5,
+        'color': '#000000',
+        'weight': 1.5,
     }
     df_sum_geo.reset_index(inplace=True)
     folium.features.GeoJson(
@@ -289,14 +291,15 @@ with st.container():
         style_function=style_function,
         highlight_function=highlight_function,
         tooltip=folium.features.GeoJsonTooltip(
-            fields=["region", "count", "duration"],
-            aliases=["Region", "Total number of Alerts", "Total duration of Alerts"],
+            fields=['region', 'count', 'duration'],
+            aliases=['Region', 'Total number', 'Total duration'],
             sticky=False
         )
     ).add_to(map)
 
-    
-    st_map = st_folium(map,height=850, width=2200)
+    _, col111, _ = st.columns([1,4,1])
+    with col111:
+        st_map = st_folium(map, width=1100)
 
 
 
@@ -339,17 +342,17 @@ with st.container():
 
 
 with st.container():
-    col511, _ = st.columns([1, 3])
+    col511, _ = st.columns([2, 3])
     with col511:
         with st.expander('Data sources'):
             st.markdown(
                 '''
                 - [Ukrainian air raid sirens dataset](https://github.com/Vadimkin/ukrainian-air-raid-sirens-dataset/tree/main/datasets) (csv, updated daily)
-                - [First-level Administrative Divisions, Ukraine(geoJSON)](https://geodata.lib.utexas.edu/catalog/stanford-gg870xt4706) 
+                - [First-level Administrative Divisions, Ukraine](https://geodata.lib.utexas.edu/catalog/stanford-gg870xt4706) (geoJSON)
                 '''
             )
 
-    col521, _ = st.columns([1, 3])
+    col521, _ = st.columns([2, 3])
     with col521:
         with st.expander('Annotations'):
             st.markdown(
