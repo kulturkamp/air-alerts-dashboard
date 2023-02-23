@@ -181,12 +181,12 @@ def create_barplot3(data, x, y, color, title_text):
             tickfont=dict(
                 family='Aerial Black',
                 ),
-            fixedrange=True
+            fixedrange=True,
         ),
+        dragmode=False,
         height=850
     )
-    fig.update_traces(
-        
+    fig.update_traces(        
         hovertemplate='%{y}<br>Count: %{x}'
     )
     return fig
