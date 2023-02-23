@@ -127,9 +127,9 @@ def create_barplot2(x, y, title_text):
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         xaxis=dict(
-                tickfont=dict(
-                    family='Aerial Black',
-                )
+            tickfont=dict(
+                family='Aerial Black',
+            )
         ),
         yaxis=dict(
             visible=False
@@ -170,6 +170,7 @@ def create_barplot3(data, x, y, color, title_text):
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         xaxis=dict(
+            fixedrange=True,
             visible=False,
             
         ),
@@ -180,6 +181,7 @@ def create_barplot3(data, x, y, color, title_text):
             tickfont=dict(
                 family='Aerial Black',
                 ),
+            fixedrange=True
         ),
         height=850
     )
