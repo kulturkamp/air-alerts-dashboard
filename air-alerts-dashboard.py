@@ -174,7 +174,12 @@ with st.container():
 with st.container():
     st.plotly_chart(create_barplot3(periods_grouped, 'count', 'region', 'start_period', 
                                     'Alerts issued by part of the day<br>(grouped by region)'), use_container_width=True)
-                                    
+
+st.markdown(
+    '''
+    Also check out [russian militry loses dashboard](https://kulturkamp-2022-war-loses-dashboa-russia-loses-dashboard-7k2mid.streamlit.app/)
+    '''
+)
 # Displaying Data sources and Annotations sections                                
 with st.container():
     col511, _ = st.columns([2, 3])
