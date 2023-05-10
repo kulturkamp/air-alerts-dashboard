@@ -177,7 +177,7 @@ with st.container():
 
 st.markdown(
     '''
-    Also check out [russian militry loses dashboard](https://kulturkamp-2022-war-loses-dashboa-russia-loses-dashboard-7k2mid.streamlit.app/)
+    Also check out [russian militry loses dashboard](https://war-loses-russia-dashbrd.streamlit.app/)
     '''
 )
 # Displaying Data sources and Annotations sections                                
