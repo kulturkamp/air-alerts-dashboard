@@ -44,7 +44,7 @@ max_date = max(oblast_alerts_df['started_at']).strftime("%Y-%m-%d")
 
 # Getting total number of Alerts issued by region
 total_alerts = oblast_alerts_df['region'].value_counts()
-total_alerts_by_region_df = pd.DataFrame(total_alerts.reset_index().rename(columns={'index':'region', 'region': 'count'}))
+total_alerts_by_region_df = pd.DataFrame(total_alerts.reset_index())
 
 # Grouping by region and Alert issue datetime and aggregating duration field
 grouped = oblast_alerts_df.groupby(['region', 'started_at_day']).agg({'duration':['count', 'sum']})
@@ -162,12 +162,12 @@ with st.container():
                                     'Total duration of Alerts, hours'), use_container_width=True, config=config_static)
 # Displaying Alerts issue part of the day distribution barpot
 with st.container():
-    max_period_percentage = round(max(periods_total_df['start_period'])/sum(periods_total_df['start_period'])*100)
-    max_period_percantage_label = periods_total_df.iloc[periods_total_df['start_period'].argmax()]['index']
+    max_period_percentage = round(max(periods_total_df['count'])/sum(periods_total_df['count'])*100)
+    max_period_percantage_label = periods_total_df.iloc[periods_total_df['count'].argmax()]['start_period']
     max_period_percentage_string = f'Almost {max_period_percentage}% of Alerts issued was in the {max_period_percantage_label}'
     st.markdown(f"<h3 style='text-align: center; color: #8c785d;'>{max_period_percentage_string}</h1>", unsafe_allow_html=True)
-    st.plotly_chart(create_barplot2(periods_total_df['index'], 
-                                    periods_total_df['start_period'], 
+    st.plotly_chart(create_barplot2(periods_total_df['start_period'], 
+                                    periods_total_df['count'], 
                                     'Alerts issued by part of the day'), use_container_width=True, config=config_static)
 
 # Displaying Alerts issue part of the day grouped by region horizontal barplot
